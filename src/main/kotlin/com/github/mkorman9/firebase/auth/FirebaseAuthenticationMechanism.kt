@@ -63,9 +63,8 @@ internal class FirebaseIdentityProvider(
         }
     }
 
-    override fun getRequestType(): Class<FirebaseAuthenticationRequest> {
-        return FirebaseAuthenticationRequest::class.java
-    }
+    override fun getRequestType(): Class<FirebaseAuthenticationRequest> =
+        FirebaseAuthenticationRequest::class.java
 }
 
 class FirebaseAuthenticationRequest(val token: String) : BaseAuthenticationRequest()
