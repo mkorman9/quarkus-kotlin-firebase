@@ -12,18 +12,15 @@ import jakarta.ws.rs.core.MediaType
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(value = [])
-class HelloWorldResource {
+class WhoamiResource {
     @GET
-    fun getHelloWorld() = mapOf(
-        Pair("hello", "world")
-    )
+    fun anonymous() = WhoamiResponse("anonymous")
 
     @GET
-    @Path("/auth")
+    @Path("/secured")
     @Authenticated
-    fun getAuthenticated(@Context authentication: FirebaseAuthentication): Map<String, String> {
-        return mapOf(
-            Pair("user", authentication.uid)
-        )
-    }
+    fun getAuthenticated(@Context authentication: FirebaseAuthentication) =
+        WhoamiResponse(authentication.uid)
 }
+
+data class WhoamiResponse(val user: String)
