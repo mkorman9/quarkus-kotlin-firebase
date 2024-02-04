@@ -26,32 +26,23 @@ internal class FirebaseAuthenticationMechanism : HttpAuthenticationMechanism {
             return Uni.createFrom().nullItem()
         }
 
-        val token = header.substring(BEARER_TOKEN_TYPE_LENGTH).trim()
+        val token = header.substring(BEARER_TOKEN_TYPE.length).trim()
         return identityProviderManager.authenticate(FirebaseAuthenticationRequest(token))
-            .onFailure().recoverWithItem { throwable: Throwable ->
-                if (throwable is AuthenticationServerException) {
-                    context.fail(throwable)
-                }
-                null
-            }
+            .onFailure().recoverWithItem { _ -> null }
     }
 
-    override fun getCredentialTypes(): Set<Class<out AuthenticationRequest>> {
-        return mutableSetOf(FirebaseAuthenticationRequest::class.java)
-    }
+    override fun getCredentialTypes(): Set<Class<out AuthenticationRequest>> =
+        setOf(FirebaseAuthenticationRequest::class.java)
 
-    override fun getChallenge(context: RoutingContext): Uni<ChallengeData> {
-        return Uni.createFrom().nullItem()
-    }
+    override fun getChallenge(context: RoutingContext): Uni<ChallengeData> =
+        Uni.createFrom().nullItem()
 
-    override fun sendChallenge(context: RoutingContext): Uni<Boolean> {
-        return Uni.createFrom().item(false)
-    }
+    override fun sendChallenge(context: RoutingContext): Uni<Boolean> =
+        Uni.createFrom().item(false)
 
     companion object {
         private const val AUTHORIZATION_HEADER = "Authorization"
         private const val BEARER_TOKEN_TYPE = "Bearer"
-        private const val BEARER_TOKEN_TYPE_LENGTH = BEARER_TOKEN_TYPE.length
     }
 }
 
