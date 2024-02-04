@@ -5,8 +5,9 @@ import com.google.firebase.cloud.FirestoreClient
 import io.quarkus.runtime.StartupEvent
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.event.Observes
+import java.util.concurrent.TimeUnit
 
-data class Duck(
+data class DuckDocument(
     val name: String = "",
     val favoriteFood: String = ""
 )
@@ -20,16 +21,16 @@ class DuckService(
 
         firestore.collection("ducks")
             .document("beatrice")
-            .set(Duck(
+            .set(DuckDocument(
                 name = "Beatrice",
                 favoriteFood = "Water with ice"
             ))
-            .get()
+            .get(5, TimeUnit.SECONDS)
 
         val ducks = firestore.collection("ducks")
             .get()
-            .get()
-            .toObjects(Duck::class.java)
+            .get(5, TimeUnit.SECONDS)
+            .toObjects(DuckDocument::class.java)
 
         println(ducks)
     }
